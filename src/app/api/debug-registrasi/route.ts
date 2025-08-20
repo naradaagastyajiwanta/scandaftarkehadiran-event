@@ -18,7 +18,7 @@ const auth = new google.auth.GoogleAuth({
 const sheets = google.sheets({ version: 'v4', auth });
 
 // GET - Debug Registrasi sheet
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     if (!SPREADSHEET_ID || !GOOGLE_PRIVATE_KEY || !GOOGLE_CLIENT_EMAIL) {
       return NextResponse.json(

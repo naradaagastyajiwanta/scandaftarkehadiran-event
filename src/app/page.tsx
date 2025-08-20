@@ -278,9 +278,9 @@ export default function ParticipantVerification() {
           <h4 className="font-semibold text-blue-800 mb-2">Petunjuk Penggunaan:</h4>
           <ul className="text-blue-700 text-sm space-y-1">
             <li>• Scan QR code peserta atau ketik manual ID peserta</li>
-            <li>• Tekan tombol "Verifikasi" untuk mengecek data</li>
-            <li>• Jika data ditemukan, klik "Tandai Hadir" untuk absen</li>
-            <li>• Gunakan "Scan Peserta Lain" untuk melanjutkan</li>
+            <li>• Tekan tombol &quot;Verifikasi&quot; untuk mengecek data</li>
+            <li>• Jika data ditemukan, klik &quot;Tandai Hadir&quot; untuk absen</li>
+            <li>• Gunakan &quot;Scan Peserta Lain&quot; untuk melanjutkan</li>
           </ul>
         </div>
       </div>
