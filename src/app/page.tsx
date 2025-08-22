@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import QrScanner from '@/components/QrScanner';
 import ClientOnly from '@/components/ClientOnly';
 
@@ -17,6 +18,13 @@ interface ApiResponse {
   data?: ParticipantData;
 }
 
+interface User {
+  id: string;
+  username: string;
+  name: string;
+  role: string;
+}
+
 // API Configuration - menggunakan API route lokal
 const API_URL = '/api/participant';
 
@@ -29,14 +37,53 @@ export default function ParticipantVerification() {
   const [success, setSuccess] = useState('');
   const [isVerified, setIsVerified] = useState(false);
   const [isQrScannerActive, setIsQrScannerActive] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  // Check authentication on mount
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      console.log('Checking authentication...');
+      const response = await fetch('/api/auth/verify');
+      const data = await response.json();
+      console.log('Auth check response:', data);
+      
+      if (data.success) {
+        setUser(data.user);
+        console.log('User authenticated:', data.user);
+      } else {
+        console.log('Not authenticated, redirecting to login');
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      router.push('/login');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   // Auto-focus input for mobile QR scanners
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && !authLoading) {
       inputRef.current.focus();
     }
-  }, []);
+  }, [authLoading]);
 
   // Clear notifications after 5 seconds
   useEffect(() => {
@@ -184,9 +231,40 @@ export default function ParticipantVerification() {
     }
   };
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-gray-600">Memverifikasi akses...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
       <div className="max-w-md mx-auto">
+        {/* User Info Header */}
+        {user && (
+          <div className="bg-white rounded-lg shadow-lg p-4 mb-6 flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800">{user.name}</h2>
+              <p className="text-gray-600 text-sm">@{user.username} • {user.role}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">

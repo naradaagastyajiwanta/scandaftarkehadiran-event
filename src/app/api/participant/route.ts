@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { google, sheets_v4 } from 'googleapis';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
 // Demo mode - set to false to use Google Sheets
 const DEMO_MODE = false;
@@ -47,6 +49,8 @@ iwNGksygrbg2kCOLsx9nC7FGRdytR66GPGLEEkH2j+6L2eu2uF4hl3R1DXv5titX
 /zxoeH7g1mGxfyAT2nxLJHYo
 -----END PRIVATE KEY-----`;
 
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this-in-production';
+
 // Initialize auth and sheets only if not in demo mode
 let auth: InstanceType<typeof google.auth.GoogleAuth> | null = null;
 let sheets: sheets_v4.Sheets | null = null;
@@ -61,6 +65,27 @@ if (!DEMO_MODE) {
   });
   
   sheets = google.sheets({ version: 'v4', auth });
+}
+
+// Helper function to get user from token
+async function getUserFromToken(): Promise<{ name: string; username: string } | null> {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+    
+    if (!token) {
+      return null;
+    }
+    
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    return {
+      name: decoded.name,
+      username: decoded.username
+    };
+  } catch (error) {
+    console.error('Error getting user from token:', error);
+    return null;
+  }
 }
 
 export async function GET(request: Request) {
@@ -166,6 +191,15 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
+    // Get user info from token
+    const currentUser = await getUserFromToken();
+    if (!currentUser) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'User tidak terautentikasi'
+      }, { status: 401 });
+    }
+
     if (DEMO_MODE) {
       // Demo mode - use in-memory attendance log
       const existingAttendance = attendanceLog.find(a => a.id === id.trim());
@@ -204,7 +238,7 @@ export async function POST(request: Request) {
         message: 'Kehadiran berhasil dicatat',
         data: {
           ...participant,
-          status: `Hadir - ${timestamp}`
+          status: `Hadir - ${timestamp} (oleh: ${currentUser.name})`
         }
       });
     }
@@ -222,7 +256,7 @@ export async function POST(request: Request) {
     // Check if participant already registered
     const checkResponse = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'Registrasi!A:B',
+      range: 'Registrasi!A:C',
     });
 
     const existingRows = checkResponse.data.values || [];
@@ -284,13 +318,13 @@ export async function POST(request: Request) {
     
     const nextRow = (existingData.data.values?.length || 0) + 1;
     
-    // Only update columns A and B, leave other columns untouched
+    // Update columns A, B, and C (ID, timestamp, recorder name)
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: `Registrasi!A${nextRow}:B${nextRow}`,
+      range: `Registrasi!A${nextRow}:C${nextRow}`,
       valueInputOption: 'RAW',
       requestBody: {
-        values: [[id, timestamp]] // Only ID and timestamp
+        values: [[id, timestamp, currentUser.name]] // ID, timestamp, recorder name
       }
     });
 
@@ -299,7 +333,7 @@ export async function POST(request: Request) {
       message: 'Kehadiran berhasil dicatat',
       data: {
         ...participantData,
-        status: `Hadir - ${timestamp}`
+        status: `Hadir - ${timestamp} (oleh: ${currentUser.name})`
       }
     });
 
