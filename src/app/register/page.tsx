@@ -171,7 +171,7 @@ export default function RegisterPage() {
           <ul className="text-sm space-y-1" style={{color: '#8b2635'}}>
             <li>• Username minimal 3 karakter</li>
             <li>• Password minimal 6 karakter</li>
-            <li>• Akun baru akan memiliki role "user"</li>
+            <li>• Akun baru akan memiliki role &quot;user&quot;</li>
             <li>• Setelah daftar, silakan login dengan akun yang dibuat</li>
           </ul>
         </div>

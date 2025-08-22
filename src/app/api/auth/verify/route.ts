@@ -17,7 +17,12 @@ export async function GET() {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & {
+      id: string;
+      username: string;
+      name: string;
+      role: string;
+    };
 
     return NextResponse.json({
       success: true,

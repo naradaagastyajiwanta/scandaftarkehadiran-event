@@ -32,7 +32,6 @@ export default function ParticipantVerification() {
   const [participantId, setParticipantId] = useState('');
   const [participant, setParticipant] = useState<ParticipantData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [marking, setMarking] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isVerified, setIsVerified] = useState(false);
@@ -41,11 +40,6 @@ export default function ParticipantVerification() {
   const [authLoading, setAuthLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-
-  // Check authentication on mount
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
   const checkAuth = async () => {
     try {
@@ -68,6 +62,11 @@ export default function ParticipantVerification() {
       setAuthLoading(false);
     }
   };
+
+  // Check authentication on mount
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -200,25 +199,6 @@ export default function ParticipantVerification() {
     setLoading(false);
   };
 
-  // Handle mark attendance
-  const handleMarkAttendance = async () => {
-    if (!participant) return;
-
-    setMarking(true);
-    setError('');
-    setSuccess('');
-
-    const result = await markAsPresent(participant.id);
-
-    if (result.status === 'verified') {
-      setSuccess('Kehadiran berhasil dicatat! ✅');
-      setIsVerified(true);
-    } else if (result.status === 'error') {
-      setError(result.message || 'Gagal mencatat kehadiran');
-    }
-
-    setMarking(false);
-  };
 
   // Handle QR scan result
   const handleQrScan = async (scannedId: string) => {

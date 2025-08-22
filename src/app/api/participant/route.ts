@@ -77,7 +77,12 @@ async function getUserFromToken(): Promise<{ name: string; username: string } | 
       return null;
     }
     
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & {
+      id: string;
+      username: string;
+      name: string;
+      role: string;
+    };
     return {
       name: decoded.name,
       username: decoded.username
