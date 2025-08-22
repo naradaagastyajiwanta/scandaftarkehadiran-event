@@ -13,7 +13,7 @@ const DEMO_PARTICIPANTS = [
   { id: '5791246F', nama: 'Budi Santoso', instansi: 'CV Digital Kreatif' }
 ];
 
-let attendanceLog: Array<{id: string, timestamp: string}> = [];
+const attendanceLog: Array<{id: string, timestamp: string}> = [];
 
 // Google Sheets credentials
 const GOOGLE_SPREADSHEET_ID = '1VF_kpv0UyZwxGrDSlU5cSoRcyygK2Wdk6p4SMH58sXs';
