@@ -13,6 +13,8 @@
     "npm": ">=8.0.0"
   },
   "dependencies": {
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
     "googleapis": "^156.0.0",
     "next": "15.4.5",
     "react": "19.1.0",

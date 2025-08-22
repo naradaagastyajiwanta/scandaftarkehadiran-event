@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import QrScanner from '@/components/QrScanner';
+import ClientOnly from '@/components/ClientOnly';
 
 // Types for API responses
 interface ParticipantData {
@@ -26,6 +28,7 @@ export default function ParticipantVerification() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isVerified, setIsVerified] = useState(false);
+  const [isQrScannerActive, setIsQrScannerActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Auto-focus input for mobile QR scanners
@@ -125,6 +128,32 @@ export default function ParticipantVerification() {
     setMarking(false);
   };
 
+  // Handle QR scan result
+  const handleQrScan = async (scannedId: string) => {
+    setIsQrScannerActive(false);
+    setParticipantId(scannedId);
+    
+    // Auto-verify after QR scan
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    setParticipant(null);
+    setIsVerified(false);
+
+    const result = await checkParticipant(scannedId.trim());
+
+    if (result.status === 'found' && result.data) {
+      setParticipant(result.data);
+      setSuccess('Peserta ditemukan! ✅');
+    } else if (result.status === 'not_found') {
+      setError('Data tidak ditemukan ❌');
+    } else if (result.status === 'error') {
+      setError(result.message || 'Terjadi kesalahan saat mengambil data');
+    }
+
+    setLoading(false);
+  };
+
   // Reset form
   const resetForm = () => {
     setParticipantId('');
@@ -169,23 +198,37 @@ export default function ParticipantVerification() {
                 autoComplete="off"
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading || !participantId.trim()}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
-            >
-              {loading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Memverifikasi...
-                </>
-              ) : (
-                'Verifikasi'
-              )}
-            </button>
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={loading || !participantId.trim()}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Memverifikasi...
+                  </>
+                ) : (
+                  'Verifikasi'
+                )}
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setIsQrScannerActive(true)}
+                disabled={loading}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                title="Scan QR Code"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 16a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM15 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM13 13h8v8h-8v-8z" />
+                </svg>
+              </button>
+            </div>
           </form>
         </div>
 
@@ -277,12 +320,21 @@ export default function ParticipantVerification() {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
           <h4 className="font-semibold text-blue-800 mb-2">Petunjuk Penggunaan:</h4>
           <ul className="text-blue-700 text-sm space-y-1">
-            <li>• Scan QR code peserta atau ketik manual ID peserta</li>
+            <li>• Klik tombol hijau untuk scan QR code atau ketik manual ID peserta</li>
             <li>• Tekan tombol &quot;Verifikasi&quot; untuk mengecek data</li>
             <li>• Jika data ditemukan, klik &quot;Tandai Hadir&quot; untuk absen</li>
             <li>• Gunakan &quot;Scan Peserta Lain&quot; untuk melanjutkan</li>
           </ul>
         </div>
+
+        {/* QR Scanner Modal */}
+        <ClientOnly>
+          <QrScanner
+            isActive={isQrScannerActive}
+            onScan={handleQrScan}
+            onClose={() => setIsQrScannerActive(false)}
+          />
+        </ClientOnly>
       </div>
     </div>
   );
