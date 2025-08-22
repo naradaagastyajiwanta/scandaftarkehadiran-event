@@ -98,7 +98,16 @@ export default function ParticipantVerification() {
 
     if (result.status === 'found' && result.data) {
       setParticipant(result.data);
-      setSuccess('Peserta ditemukan! ✅');
+      
+      // Automatically mark attendance
+      const markResult = await markAsPresent(result.data.id);
+      
+      if (markResult.status === 'verified') {
+        setSuccess('Kehadiran berhasil dicatat! ✅');
+        setIsVerified(true);
+      } else if (markResult.status === 'error') {
+        setError(markResult.message || 'Gagal mencatat kehadiran');
+      }
     } else if (result.status === 'not_found') {
       setError('Data tidak ditemukan ❌');
     } else if (result.status === 'error') {
@@ -133,7 +142,7 @@ export default function ParticipantVerification() {
     setIsQrScannerActive(false);
     setParticipantId(scannedId);
     
-    // Auto-verify after QR scan
+    // Auto-verify and mark attendance after QR scan
     setLoading(true);
     setError('');
     setSuccess('');
@@ -144,7 +153,16 @@ export default function ParticipantVerification() {
 
     if (result.status === 'found' && result.data) {
       setParticipant(result.data);
-      setSuccess('Peserta ditemukan! ✅');
+      
+      // Automatically mark attendance
+      const markResult = await markAsPresent(result.data.id);
+      
+      if (markResult.status === 'verified') {
+        setSuccess('Kehadiran berhasil dicatat! ✅');
+        setIsVerified(true);
+      } else if (markResult.status === 'error') {
+        setError(markResult.message || 'Gagal mencatat kehadiran');
+      }
     } else if (result.status === 'not_found') {
       setError('Data tidak ditemukan ❌');
     } else if (result.status === 'error') {
@@ -210,10 +228,10 @@ export default function ParticipantVerification() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Memverifikasi...
+                    Mencatat kehadiran...
                   </>
                 ) : (
-                  'Verifikasi'
+                  'Catat Kehadiran'
                 )}
               </button>
               
@@ -276,26 +294,6 @@ export default function ParticipantVerification() {
               </div>
             </div>
 
-            {/* Mark Attendance Button */}
-            {!isVerified && (
-              <button
-                onClick={handleMarkAttendance}
-                disabled={marking}
-                className="w-full mt-6 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
-              >
-                {marking ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Mencatat...
-                  </>
-                ) : (
-                  'Tandai Hadir'
-                )}
-              </button>
-            )}
 
             {isVerified && (
               <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4 text-center">
@@ -321,8 +319,8 @@ export default function ParticipantVerification() {
           <h4 className="font-semibold text-blue-800 mb-2">Petunjuk Penggunaan:</h4>
           <ul className="text-blue-700 text-sm space-y-1">
             <li>• Klik tombol hijau untuk scan QR code atau ketik manual ID peserta</li>
-            <li>• Tekan tombol &quot;Verifikasi&quot; untuk mengecek data</li>
-            <li>• Jika data ditemukan, klik &quot;Tandai Hadir&quot; untuk absen</li>
+            <li>• Tekan tombol &quot;Catat Kehadiran&quot; untuk langsung mencatat absen</li>
+            <li>• Kehadiran akan otomatis tercatat jika data peserta ditemukan</li>
             <li>• Gunakan &quot;Scan Peserta Lain&quot; untuk melanjutkan</li>
           </ul>
         </div>

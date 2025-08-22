@@ -276,12 +276,21 @@ export async function POST(request: Request) {
       timeZone: 'Asia/Jakarta'
     });
 
-    await sheets.spreadsheets.values.append({
+    // Find next empty row to write to
+    const existingData = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'Registrasi!A:G',
+      range: 'Registrasi!A:A',
+    });
+    
+    const nextRow = (existingData.data.values?.length || 0) + 1;
+    
+    // Only update columns A and B, leave other columns untouched
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `Registrasi!A${nextRow}:B${nextRow}`,
       valueInputOption: 'RAW',
       requestBody: {
-        values: [[id, timestamp, '', '', '', '', '']] // ID di kolom A, timestamp di kolom B
+        values: [[id, timestamp]] // Only ID and timestamp
       }
     });
 
