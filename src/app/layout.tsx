@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Verifikasi Peserta Event",
-  description: "Aplikasi verifikasi peserta event dengan QR code scanner",
+  title: "Verifikasi Peserta Event - Manusia Indonesia Jaya: Meretas Jalan Kembali ke Jati Diri Bangsa",
+  description: "Aplikasi verifikasi peserta event Manusia Indonesia Jaya: Meretas Jalan Kembali ke Jati Diri Bangsa dengan QR code scanner",
 };
 
 export default function RootLayout({

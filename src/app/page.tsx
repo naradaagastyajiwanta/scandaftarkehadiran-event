@@ -300,16 +300,37 @@ export default function ParticipantVerification() {
         {/* Header */}
         <div className="text-center mb-8 relative">
           <div className="absolute inset-0 -top-4 -bottom-4 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 rounded-full blur-xl"></div>
-          <h1 className="text-4xl font-bold mb-3 relative z-10" style={{
-            color: '#710100',
-            textShadow: '2px 2px 4px rgba(113, 1, 0, 0.2)',
-            background: 'linear-gradient(135deg, #710100 0%, #8b2635 50%, #710100 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            ✨ Verifikasi Peserta
-          </h1>
+          <div className="mb-4">
+            <h1 className="text-4xl font-bold mb-2 relative z-10" style={{
+              color: '#710100',
+              textShadow: '2px 2px 4px rgba(113, 1, 0, 0.2)',
+              background: 'linear-gradient(135deg, #710100 0%, #8b2635 50%, #710100 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              ✨ Verifikasi Peserta
+            </h1>
+            <div className="text-center mb-3">
+              <div className="mb-2 p-3 rounded-lg" style={{
+                backgroundColor: 'rgba(113, 1, 0, 0.05)',
+                border: '1px solid rgba(113, 1, 0, 0.1)'
+              }}>
+                <h2 className="text-xl font-bold leading-tight mb-1" style={{
+                  color: '#710100',
+                  textShadow: '1px 1px 2px rgba(113, 1, 0, 0.2)'
+                }}>
+                  🇮🇩 Manusia Indonesia Jaya
+                </h2>
+                <h3 className="text-lg font-semibold leading-tight" style={{
+                  color: '#8b2635',
+                  opacity: 0.95
+                }}>
+                  Meretas Jalan Kembali ke Jati Diri Bangsa
+                </h3>
+              </div>
+            </div>
+          </div>
           <p className="text-lg relative z-10" style={{color: '#8b2635', opacity: 0.8}}>
             🔍 Scan QR Code atau masukkan ID peserta
           </p>
