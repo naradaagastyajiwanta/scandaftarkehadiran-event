@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
+import { google, sheets_v4 } from 'googleapis';
 
 // Demo mode - set to false to use Google Sheets
 const DEMO_MODE = false;
@@ -48,8 +48,8 @@ iwNGksygrbg2kCOLsx9nC7FGRdytR66GPGLEEkH2j+6L2eu2uF4hl3R1DXv5titX
 -----END PRIVATE KEY-----`;
 
 // Initialize auth and sheets only if not in demo mode
-let auth: any = null;
-let sheets: any = null;
+let auth: InstanceType<typeof google.auth.GoogleAuth> | null = null;
+let sheets: sheets_v4.Sheets | null = null;
 
 if (!DEMO_MODE) {
   auth = new google.auth.GoogleAuth({
@@ -94,6 +94,13 @@ export async function GET(request: Request) {
     }
 
     // Production mode - use Google Sheets
+    if (!sheets) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'Google Sheets not initialized'
+      }, { status: 500 });
+    }
+
     const spreadsheetId = GOOGLE_SPREADSHEET_ID;
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
@@ -203,6 +210,13 @@ export async function POST(request: Request) {
     }
 
     // Production mode - use Google Sheets
+    if (!sheets) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'Google Sheets not initialized'
+      }, { status: 500 });
+    }
+
     const spreadsheetId = GOOGLE_SPREADSHEET_ID;
 
     // Check if participant already registered
