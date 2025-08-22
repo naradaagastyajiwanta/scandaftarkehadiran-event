@@ -16,7 +16,7 @@ interface ApiResponse {
 }
 
 // API Configuration - menggunakan API route lokal
-const API_URL = '/api/participants';
+const API_URL = '/api/participant';
 
 export default function ParticipantVerification() {
   const [participantId, setParticipantId] = useState('');

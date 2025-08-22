@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    // Disable ESLint during production builds untuk Heroku deployment
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    // Disable TypeScript errors during builds untuk Heroku deployment
     ignoreBuildErrors: false,
   },
+  output: 'standalone',
 }
 
 module.exports = nextConfig
