@@ -222,7 +222,7 @@ export async function POST(request: Request) {
     // Check if participant already registered
     const checkResponse = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'Registrasi!A:G',
+      range: 'Registrasi!A:B',
     });
 
     const existingRows = checkResponse.data.values || [];
@@ -233,7 +233,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
           status: 'error',
           message: 'Peserta sudah pernah absen sebelumnya',
-          timestamp: row[6] || 'Tidak ada timestamp' // Kolom G = index 6
+          timestamp: row[1] || 'Tidak ada timestamp' // Kolom B = index 1
         }, { status: 409 });
       }
     }
@@ -281,7 +281,7 @@ export async function POST(request: Request) {
       range: 'Registrasi!A:G',
       valueInputOption: 'RAW',
       requestBody: {
-        values: [[id, '', '', '', '', '', timestamp]] // ID di kolom A, timestamp di kolom G
+        values: [[id, timestamp, '', '', '', '', '']] // ID di kolom A, timestamp di kolom B
       }
     });
 
