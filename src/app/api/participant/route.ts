@@ -1,9 +1,23 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
-// Hardcoded Google Sheets credentials
-const GOOGLE_SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms';
-const GOOGLE_CLIENT_EMAIL = 'scanwebapp@scanwebapp-445417.iam.gserviceaccount.com';
+// Demo mode - set to false to use Google Sheets
+const DEMO_MODE = false;
+
+// Mock data for demo
+const DEMO_PARTICIPANTS = [
+  { id: '1391495B', nama: 'John Doe', instansi: 'PT ABC Indonesia' },
+  { id: '2468013C', nama: 'Jane Smith', instansi: 'CV XYZ Solutions' },
+  { id: '3579024D', nama: 'Ahmad Rahman', instansi: 'UD Maju Bersama' },
+  { id: '4680135E', nama: 'Siti Nurhaliza', instansi: 'PT Teknologi Masa Depan' },
+  { id: '5791246F', nama: 'Budi Santoso', instansi: 'CV Digital Kreatif' }
+];
+
+let attendanceLog: Array<{id: string, timestamp: string}> = [];
+
+// Google Sheets credentials
+const GOOGLE_SPREADSHEET_ID = '1VF_kpv0UyZwxGrDSlU5cSoRcyygK2Wdk6p4SMH58sXs';
+const GOOGLE_CLIENT_EMAIL = 'event-verification-service@n8n-rsh.iam.gserviceaccount.com';
 const GOOGLE_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDfrI2jL7ZYal4d
 EK7a9w8w/9zbc7AkDZJv8lm/q83KUkDS3/mJ6BngMCFAiGz31zCUL2XDaMoX30Zz
@@ -33,7 +47,8 @@ iwNGksygrbg2kCOLsx9nC7FGRdytR66GPGLEEkH2j+6L2eu2uF4hl3R1DXv5titX
 /zxoeH7g1mGxfyAT2nxLJHYo
 -----END PRIVATE KEY-----`;
 
-const auth = new google.auth.GoogleAuth({
+// Initialize auth only if not in demo mode
+const auth = DEMO_MODE ? null : new google.auth.GoogleAuth({
   credentials: {
     client_email: GOOGLE_CLIENT_EMAIL,
     private_key: GOOGLE_PRIVATE_KEY,
@@ -41,7 +56,7 @@ const auth = new google.auth.GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
-const sheets = google.sheets({ version: 'v4', auth });
+const sheets = DEMO_MODE ? null : google.sheets({ version: 'v4', auth });
 
 export async function GET(request: Request) {
   try {
@@ -55,9 +70,27 @@ export async function GET(request: Request) {
       }, { status: 400 });
     }
 
-    const spreadsheetId = GOOGLE_SPREADSHEET_ID;
+    if (DEMO_MODE) {
+      // Demo mode - search in mock data
+      const participant = DEMO_PARTICIPANTS.find(p => p.id === id.trim());
+      
+      if (!participant) {
+        return NextResponse.json({
+          status: 'not_found',
+          message: 'Peserta tidak ditemukan'
+        }, { status: 404 });
+      }
 
-    const response = await sheets.spreadsheets.values.get({
+      return NextResponse.json({
+        status: 'found',
+        message: 'Peserta ditemukan',
+        data: participant
+      });
+    }
+
+    // Production mode - use Google Sheets
+    const spreadsheetId = GOOGLE_SPREADSHEET_ID;
+    const response = await sheets!.spreadsheets.values.get({
       spreadsheetId,
       range: 'ProcessedData!A:Z',
     });
@@ -121,10 +154,54 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
+    if (DEMO_MODE) {
+      // Demo mode - use in-memory attendance log
+      const existingAttendance = attendanceLog.find(a => a.id === id.trim());
+      
+      if (existingAttendance) {
+        return NextResponse.json({
+          status: 'error',
+          message: 'Peserta sudah pernah absen sebelumnya',
+          timestamp: existingAttendance.timestamp
+        }, { status: 409 });
+      }
+
+      const participant = DEMO_PARTICIPANTS.find(p => p.id === id.trim());
+      
+      if (!participant) {
+        return NextResponse.json({
+          status: 'error',
+          message: 'Peserta tidak ditemukan'
+        }, { status: 404 });
+      }
+
+      const timestamp = new Date().toLocaleString('id-ID', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Asia/Jakarta'
+      });
+
+      attendanceLog.push({ id: id.trim(), timestamp });
+
+      return NextResponse.json({
+        status: 'verified',
+        message: 'Kehadiran berhasil dicatat',
+        data: {
+          ...participant,
+          status: `Hadir - ${timestamp}`
+        }
+      });
+    }
+
+    // Production mode - use Google Sheets
     const spreadsheetId = GOOGLE_SPREADSHEET_ID;
 
     // Check if participant already registered
-    const checkResponse = await sheets.spreadsheets.values.get({
+    const checkResponse = await sheets!.spreadsheets.values.get({
       spreadsheetId,
       range: 'Registrasi!A:B',
     });
@@ -143,7 +220,7 @@ export async function POST(request: Request) {
     }
 
     // Get participant data first
-    const participantResponse = await sheets.spreadsheets.values.get({
+    const participantResponse = await sheets!.spreadsheets.values.get({
       spreadsheetId,
       range: 'ProcessedData!A:Z',
     });
@@ -180,7 +257,7 @@ export async function POST(request: Request) {
       timeZone: 'Asia/Jakarta'
     });
 
-    await sheets.spreadsheets.values.append({
+    await sheets!.spreadsheets.values.append({
       spreadsheetId,
       range: 'Registrasi!A:B',
       valueInputOption: 'RAW',
