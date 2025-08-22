@@ -289,7 +289,7 @@ export default function ParticipantVerification() {
                 value={participantId}
                 onChange={(e) => setParticipantId(e.target.value)}
                 placeholder="Masukkan atau scan ID peserta"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg text-gray-900 placeholder-gray-500"
                 disabled={loading}
                 autoComplete="off"
               />
