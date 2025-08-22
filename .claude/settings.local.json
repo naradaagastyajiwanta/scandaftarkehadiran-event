@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(powershell:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx next lint:*)"
     ],
     "additionalDirectories": [
       "G:\\"

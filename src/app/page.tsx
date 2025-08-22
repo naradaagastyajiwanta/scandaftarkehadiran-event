@@ -66,6 +66,7 @@ export default function ParticipantVerification() {
   // Check authentication on mount
   useEffect(() => {
     checkAuth();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = async () => {
@@ -336,8 +337,7 @@ export default function ParticipantVerification() {
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.9)',
                   borderColor: '#f7e6c4',
-                  color: '#710100',
-                  '::placeholder': { color: '#8b2635', opacity: 0.6 }
+                  color: '#710100'
                 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = '#710100';
