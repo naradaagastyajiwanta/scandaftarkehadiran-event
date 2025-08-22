@@ -47,16 +47,21 @@ iwNGksygrbg2kCOLsx9nC7FGRdytR66GPGLEEkH2j+6L2eu2uF4hl3R1DXv5titX
 /zxoeH7g1mGxfyAT2nxLJHYo
 -----END PRIVATE KEY-----`;
 
-// Initialize auth only if not in demo mode
-const auth = DEMO_MODE ? null : new google.auth.GoogleAuth({
-  credentials: {
-    client_email: GOOGLE_CLIENT_EMAIL,
-    private_key: GOOGLE_PRIVATE_KEY,
-  },
-  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
+// Initialize auth and sheets only if not in demo mode
+let auth: any = null;
+let sheets: any = null;
 
-const sheets = DEMO_MODE ? null : google.sheets({ version: 'v4', auth });
+if (!DEMO_MODE) {
+  auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: GOOGLE_CLIENT_EMAIL,
+      private_key: GOOGLE_PRIVATE_KEY,
+    },
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  
+  sheets = google.sheets({ version: 'v4', auth });
+}
 
 export async function GET(request: Request) {
   try {
@@ -90,7 +95,7 @@ export async function GET(request: Request) {
 
     // Production mode - use Google Sheets
     const spreadsheetId = GOOGLE_SPREADSHEET_ID;
-    const response = await sheets!.spreadsheets.values.get({
+    const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: 'ProcessedData!A:Z',
     });
@@ -201,7 +206,7 @@ export async function POST(request: Request) {
     const spreadsheetId = GOOGLE_SPREADSHEET_ID;
 
     // Check if participant already registered
-    const checkResponse = await sheets!.spreadsheets.values.get({
+    const checkResponse = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: 'Registrasi!A:B',
     });
@@ -220,7 +225,7 @@ export async function POST(request: Request) {
     }
 
     // Get participant data first
-    const participantResponse = await sheets!.spreadsheets.values.get({
+    const participantResponse = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: 'ProcessedData!A:Z',
     });
@@ -257,7 +262,7 @@ export async function POST(request: Request) {
       timeZone: 'Asia/Jakarta'
     });
 
-    await sheets!.spreadsheets.values.append({
+    await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: 'Registrasi!A:B',
       valueInputOption: 'RAW',
