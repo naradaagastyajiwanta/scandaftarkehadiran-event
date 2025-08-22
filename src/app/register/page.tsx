@@ -55,23 +55,23 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 px-4">
+    <div className="min-h-screen flex items-center justify-center py-8 px-4" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 100%)'}}>
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold mb-2" style={{color: '#710100'}}>
             Daftar Akun
           </h1>
-          <p className="text-gray-600">
+          <p style={{color: '#8b2635'}}>
             Buat akun baru untuk mengakses sistem verifikasi peserta
           </p>
         </div>
 
         {/* Registration Form */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="rounded-lg shadow-lg p-6" style={{backgroundColor: 'rgba(253, 242, 224, 0.95)', border: '1px solid rgba(113, 1, 0, 0.15)'}}>
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium mb-2" style={{color: '#710100'}}>
                 Nama Lengkap
               </label>
               <input
@@ -87,7 +87,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium mb-2" style={{color: '#710100'}}>
                 Username
               </label>
               <input
@@ -103,7 +103,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium mb-2" style={{color: '#710100'}}>
                 Password
               </label>
               <input
@@ -119,13 +119,13 @@ export default function RegisterPage() {
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+              <div className="border px-4 py-3 rounded-lg" style={{backgroundColor: '#fef2f2', borderColor: '#710100', color: '#710100'}}>
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+              <div className="border px-4 py-3 rounded-lg" style={{backgroundColor: '#f0fdf4', borderColor: '#22c55e', color: '#166534'}}>
                 {success}
               </div>
             )}
@@ -133,7 +133,8 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading || !username.trim() || !password.trim() || !name.trim()}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+              className="w-full disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center hover:opacity-90"
+              style={{backgroundColor: !username.trim() || !password.trim() || !name.trim() || loading ? '#9CA3AF' : '#8b2635'}}
             >
               {loading ? (
                 <>
@@ -144,7 +145,7 @@ export default function RegisterPage() {
                   Mendaftar...
                 </>
               ) : (
-                'Daftar'
+                '🎉 Daftar'
               )}
             </button>
           </form>
@@ -155,7 +156,8 @@ export default function RegisterPage() {
               Sudah punya akun?{' '}
               <Link 
                 href="/login" 
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="font-medium hover:opacity-80"
+                style={{color: '#710100'}}
               >
                 Masuk di sini
               </Link>
@@ -164,9 +166,9 @@ export default function RegisterPage() {
         </div>
 
         {/* Info */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-          <h4 className="font-semibold text-blue-800 mb-2">Informasi:</h4>
-          <ul className="text-blue-700 text-sm space-y-1">
+        <div className="border rounded-lg p-4 mt-6" style={{backgroundColor: 'rgba(253, 242, 224, 0.8)', borderColor: 'rgba(113, 1, 0, 0.3)'}}>
+          <h4 className="font-semibold mb-2" style={{color: '#710100'}}>Informasi:</h4>
+          <ul className="text-sm space-y-1" style={{color: '#8b2635'}}>
             <li>• Username minimal 3 karakter</li>
             <li>• Password minimal 6 karakter</li>
             <li>• Akun baru akan memiliki role "user"</li>

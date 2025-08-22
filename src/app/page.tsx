@@ -100,14 +100,31 @@ export default function ParticipantVerification() {
   const checkParticipant = async (id: string): Promise<ApiResponse> => {
     try {
       const response = await fetch(`${API_URL}?id=${encodeURIComponent(id)}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
       const data = await response.json();
+      
+      if (!response.ok) {
+        // Handle specific HTTP status codes
+        if (response.status === 404) {
+          return { status: 'not_found', message: `🔍 ${data.message || 'Peserta tidak ditemukan'}\n💡 Pastikan ID peserta sudah benar` };
+        } else if (response.status === 400) {
+          return { status: 'error', message: `❌ ${data.message || 'ID tidak valid'}\n📝 Periksa format ID peserta` };
+        } else if (response.status === 401) {
+          // Redirect to login if session expired
+          setTimeout(() => {
+            router.push('/login');
+          }, 2000);
+          return { status: 'error', message: '🔐 Sesi telah berakhir, akan dialihkan ke halaman login...' };
+        } else if (response.status >= 500) {
+          return { status: 'error', message: '🔧 Terjadi kesalahan server, coba lagi nanti\n📞 Hubungi admin jika masalah berlanjut' };
+        } else {
+          return { status: 'error', message: `⚠️ ${data.message || 'Terjadi kesalahan tidak dikenal'}\n🔄 Silakan coba lagi` };
+        }
+      }
+      
       return data;
     } catch (error) {
       console.error('Error checking participant:', error);
-      return { status: 'error', message: 'Network error' };
+      return { status: 'error', message: '📡 Koneksi bermasalah, periksa internet Anda\n🔄 Pastikan koneksi stabil dan coba lagi' };
     }
   };
 
@@ -119,14 +136,33 @@ export default function ParticipantVerification() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
       });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
       const data = await response.json();
+      
+      if (!response.ok) {
+        // Handle specific HTTP status codes
+        if (response.status === 409) {
+          return { status: 'error', message: `⚠️ ${data.message || 'Peserta sudah pernah absen sebelumnya'}${data.timestamp ? `\n📅 Waktu absen: ${data.timestamp}` : ''}` };
+        } else if (response.status === 404) {
+          return { status: 'error', message: '🔍 Peserta tidak ditemukan dalam database\n💡 Pastikan peserta sudah terdaftar' };
+        } else if (response.status === 400) {
+          return { status: 'error', message: `❌ ${data.message || 'Data tidak valid'}\n📝 Periksa kembali data peserta` };
+        } else if (response.status === 401) {
+          // Redirect to login if session expired
+          setTimeout(() => {
+            router.push('/login');
+          }, 2000);
+          return { status: 'error', message: '🔐 Sesi telah berakhir, akan dialihkan ke halaman login...' };
+        } else if (response.status >= 500) {
+          return { status: 'error', message: '🔧 Terjadi kesalahan server, coba lagi nanti\n📞 Hubungi admin jika masalah berlanjut' };
+        } else {
+          return { status: 'error', message: `⚠️ ${data.message || 'Gagal mencatat kehadiran'}\n🔄 Silakan coba lagi` };
+        }
+      }
+      
       return data;
     } catch (error) {
       console.error('Error marking attendance:', error);
-      return { status: 'error', message: 'Network error' };
+      return { status: 'error', message: '📡 Koneksi bermasalah, periksa internet Anda\n🔄 Pastikan koneksi stabil dan coba lagi' };
     }
   };
 
@@ -234,31 +270,46 @@ export default function ParticipantVerification() {
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 100%)'}}>
         <div className="text-center">
-          <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg className="animate-spin h-8 w-8 mx-auto mb-4" style={{color: '#710100'}} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <p className="text-gray-600">Memverifikasi akses...</p>
+          <p style={{color: '#8b2635'}}>Memverifikasi akses...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen py-8 px-4 relative overflow-hidden" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 50%, #f4dfc0 100%)'}}>
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #710100, #8b2635)'}}></div>
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #8b2635, #a73030)'}}></div>
+        <div className="absolute top-1/2 -right-40 w-40 h-40 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #710100, #8b2635)'}}></div>
+      </div>
+      <div className="max-w-md mx-auto relative z-10">
         {/* User Info Header */}
         {user && (
-          <div className="bg-white rounded-lg shadow-lg p-4 mb-6 flex justify-between items-center">
+          <div className="rounded-xl p-4 mb-6 flex justify-between items-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105" style={{
+            backgroundColor: 'rgba(253, 242, 224, 0.95)', 
+            border: '1px solid rgba(113, 1, 0, 0.2)',
+            boxShadow: '0 8px 32px rgba(113, 1, 0, 0.15), 0 2px 16px rgba(113, 1, 0, 0.1)'
+          }}>
             <div>
-              <h2 className="text-lg font-semibold text-gray-800">{user.name}</h2>
-              <p className="text-gray-600 text-sm">@{user.username} • {user.role}</p>
+              <h2 className="text-lg font-semibold" style={{color: '#710100'}}>{user.name}</h2>
+              <p className="text-sm" style={{color: '#8b2635'}}>@{user.username} • {user.role}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+              className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
+              style={{
+                backgroundColor: '#710100',
+                background: 'linear-gradient(135deg, #710100 0%, #8b2635 100%)',
+                boxShadow: '0 4px 15px rgba(113, 1, 0, 0.3)'
+              }}
             >
               Logout
             </button>
@@ -266,21 +317,33 @@ export default function ParticipantVerification() {
         )}
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Verifikasi Peserta
+        <div className="text-center mb-8 relative">
+          <div className="absolute inset-0 -top-4 -bottom-4 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 rounded-full blur-xl"></div>
+          <h1 className="text-4xl font-bold mb-3 relative z-10" style={{
+            color: '#710100',
+            textShadow: '2px 2px 4px rgba(113, 1, 0, 0.2)',
+            background: 'linear-gradient(135deg, #710100 0%, #8b2635 50%, #710100 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
+            ✨ Verifikasi Peserta
           </h1>
-          <p className="text-gray-600">
-            Scan QR Code atau masukkan ID peserta
+          <p className="text-lg relative z-10" style={{color: '#8b2635', opacity: 0.8}}>
+            🔍 Scan QR Code atau masukkan ID peserta
           </p>
         </div>
 
         {/* Input Form */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="rounded-xl p-6 mb-6 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02]" style={{
+          backgroundColor: 'rgba(253, 242, 224, 0.98)', 
+          border: '1px solid rgba(113, 1, 0, 0.2)',
+          boxShadow: '0 12px 40px rgba(113, 1, 0, 0.15), 0 4px 20px rgba(113, 1, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+        }}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="participantId" className="block text-sm font-medium text-gray-700 mb-2">
-                ID Peserta
+              <label htmlFor="participantId" className="block text-sm font-semibold mb-3 flex items-center gap-2" style={{color: '#710100'}}>
+                🎫 ID Peserta
               </label>
               <input
                 ref={inputRef}
@@ -289,16 +352,35 @@ export default function ParticipantVerification() {
                 value={participantId}
                 onChange={(e) => setParticipantId(e.target.value)}
                 placeholder="Masukkan atau scan ID peserta"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg text-gray-900 placeholder-gray-500"
+                className="w-full px-4 py-4 border-2 rounded-xl outline-none text-lg transition-all duration-300 focus:scale-[1.02]"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  borderColor: '#f7e6c4',
+                  color: '#710100',
+                  '::placeholder': { color: '#8b2635', opacity: 0.6 }
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#710100';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(113, 1, 0, 0.1), 0 8px 25px rgba(113, 1, 0, 0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#f7e6c4';
+                  e.target.style.boxShadow = 'none';
+                }}
                 disabled={loading}
                 autoComplete="off"
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <button
                 type="submit"
                 disabled={loading || !participantId.trim()}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                className="flex-1 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100"
+                style={{
+                  backgroundColor: (loading || !participantId.trim()) ? '#9CA3AF' : '#710100',
+                  background: (loading || !participantId.trim()) ? '#9CA3AF' : 'linear-gradient(135deg, #710100 0%, #8b2635 100%)',
+                  boxShadow: (loading || !participantId.trim()) ? 'none' : '0 8px 25px rgba(113, 1, 0, 0.4), 0 3px 10px rgba(113, 1, 0, 0.2)'
+                }}
               >
                 {loading ? (
                   <>
@@ -309,7 +391,9 @@ export default function ParticipantVerification() {
                     Mencatat kehadiran...
                   </>
                 ) : (
-                  'Catat Kehadiran'
+                  <>
+                    📝 Catat Kehadiran
+                  </>
                 )}
               </button>
               
@@ -317,10 +401,15 @@ export default function ParticipantVerification() {
                 type="button"
                 onClick={() => setIsQrScannerActive(true)}
                 disabled={loading}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                className="text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100"
                 title="Scan QR Code"
+                style={{
+                  backgroundColor: loading ? '#9CA3AF' : '#8b2635',
+                  background: loading ? '#9CA3AF' : 'linear-gradient(135deg, #8b2635 0%, #a73030 100%)',
+                  boxShadow: loading ? 'none' : '0 8px 25px rgba(139, 38, 53, 0.4), 0 3px 10px rgba(139, 38, 53, 0.2)'
+                }}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 16a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM15 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM13 13h8v8h-8v-8z" />
                 </svg>
               </button>
@@ -330,27 +419,57 @@ export default function ParticipantVerification() {
 
         {/* Notifications */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
+          <div className="border-2 px-6 py-4 rounded-xl mb-6 transform transition-all duration-300 animate-pulse" style={{
+            backgroundColor: 'rgba(254, 242, 242, 0.95)', 
+            borderColor: '#710100', 
+            color: '#710100',
+            boxShadow: '0 8px 25px rgba(113, 1, 0, 0.2), 0 3px 10px rgba(113, 1, 0, 0.1)'
+          }}>
+            <div className="flex items-start gap-3">
+              <div className="text-xl mt-0.5">❌</div>
+              <div className="font-medium whitespace-pre-line flex-1">{error}</div>
+            </div>
           </div>
         )}
 
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
-            {success}
+          <div className="border-2 px-6 py-4 rounded-xl mb-6 transform transition-all duration-300 animate-bounce" style={{
+            backgroundColor: 'rgba(240, 253, 244, 0.95)', 
+            borderColor: '#22c55e', 
+            color: '#166534',
+            boxShadow: '0 8px 25px rgba(34, 197, 94, 0.2), 0 3px 10px rgba(34, 197, 94, 0.1)'
+          }}>
+            <div className="flex items-center gap-3">
+              <div className="text-xl">✅</div>
+              <div className="font-medium">{success}</div>
+            </div>
           </div>
         )}
 
         {/* Participant Information Card */}
         {participant && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <div className="text-center mb-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+          <div className="rounded-xl p-6 mb-6 backdrop-blur-sm transform transition-all duration-500 hover:scale-[1.02] animate-fade-in" style={{
+            backgroundColor: 'rgba(253, 242, 224, 0.98)', 
+            border: '1px solid rgba(113, 1, 0, 0.2)',
+            boxShadow: '0 12px 40px rgba(113, 1, 0, 0.15), 0 4px 20px rgba(113, 1, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+          }}>
+            <div className="text-center mb-6">
+              <div className="relative">
+                <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-300 hover:scale-110" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.2) 100%)',
+                  border: '2px solid rgba(34, 197, 94, 0.3)'
+                }}>
+                  <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">✓</span>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-800">Data Peserta</h3>
+              <h3 className="text-xl font-bold flex items-center justify-center gap-2" style={{color: '#710100'}}>
+                👤 Data Peserta
+              </h3>
             </div>
 
             <div className="space-y-3">
