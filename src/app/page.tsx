@@ -395,7 +395,7 @@ export default function ParticipantVerification() {
                           preventDefault: () => {},
                           target: e.target,
                           currentTarget: e.currentTarget
-                        } as React.FormEvent;
+                        } as unknown as React.FormEvent;
                         handleSubmit(syntheticEvent, value); // Pass the exact value that triggered this
                       }
                     }, 300);
