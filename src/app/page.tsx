@@ -466,64 +466,118 @@ export default function ParticipantVerification() {
 
         {/* Participant Information Card */}
         {participant && (
-          <div className="rounded-xl p-6 mb-6 backdrop-blur-sm transform transition-all duration-500 hover:scale-[1.02] animate-fade-in" style={{
-            backgroundColor: 'rgba(253, 242, 224, 0.98)', 
-            border: '1px solid rgba(113, 1, 0, 0.2)',
-            boxShadow: '0 12px 40px rgba(113, 1, 0, 0.15), 0 4px 20px rgba(113, 1, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+          <div className="rounded-xl mb-6 backdrop-blur-sm transform transition-all duration-500 hover:scale-[1.02] animate-fade-in overflow-hidden" style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.98)', 
+            border: '2px solid rgba(113, 1, 0, 0.15)',
+            boxShadow: '0 15px 50px rgba(113, 1, 0, 0.12), 0 5px 25px rgba(113, 1, 0, 0.08)'
           }}>
-            <div className="text-center mb-6">
-              <div className="relative">
-                <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-300 hover:scale-110" style={{
+            {/* Header Section */}
+            <div className="px-6 py-4" style={{
+              background: 'linear-gradient(135deg, rgba(113, 1, 0, 0.95) 0%, rgba(139, 38, 53, 0.95) 100%)'
+            }}>
+              <div className="flex items-center justify-center gap-3 text-white">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)'
+                }}>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-lg font-bold">Data Peserta Event</h3>
+                  <p className="text-sm opacity-90">Manusia Indonesia Jaya</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-6">
+              <div className="grid gap-4">
+                {/* ID Section */}
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{backgroundColor: 'rgba(113, 1, 0, 0.05)'}}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{backgroundColor: 'rgba(113, 1, 0, 0.1)'}}>
+                      <svg className="w-4 h-4" style={{color: '#710100'}} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm-2 5V6a2 2 0 114 0v1H8z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold" style={{color: '#710100'}}>ID Peserta</span>
+                  </div>
+                  <span className="font-mono text-lg font-bold" style={{color: '#710100'}}>{participant.id}</span>
+                </div>
+
+                {/* Name Section */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-100">
+                      <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-700">Nama Lengkap</span>
+                  </div>
+                  <span className="font-semibold text-gray-900 text-right max-w-xs">{participant.nama}</span>
+                </div>
+
+                {/* Gender Section */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-purple-100">
+                      <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-700">Jenis Kelamin</span>
+                  </div>
+                  <span className="font-semibold text-purple-700">{participant.jenisKelamin}</span>
+                </div>
+
+                {/* Institution Section */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-green-100">
+                      <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-700">Instansi</span>
+                  </div>
+                  <span className="font-semibold text-green-700 text-right max-w-xs">{participant.instansi}</span>
+                </div>
+
+                {/* Institution Name Section */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-orange-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-orange-100">
+                      <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-gray-700">Nama Instansi</span>
+                  </div>
+                  <span className="font-semibold text-orange-700 text-right max-w-xs">{participant.namaInstansi}</span>
+                </div>
+              </div>
+
+              {/* Status Section */}
+              {isVerified && (
+                <div className="mt-6 p-4 rounded-lg text-center" style={{
                   background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.2) 100%)',
                   border: '2px solid rgba(34, 197, 94, 0.3)'
                 }}>
-                  <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-green-700 font-bold text-lg">KEHADIRAN TERCATAT</span>
+                  </div>
+                  <p className="text-green-600 text-sm font-medium">Peserta telah berhasil diabsen pada sistem</p>
                 </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">✓</span>
-                </div>
-              </div>
-              <h3 className="text-xl font-bold flex items-center justify-center gap-2" style={{color: '#710100'}}>
-                👤 Data Peserta
-              </h3>
+              )}
             </div>
-
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 font-medium">ID:</span>
-                <span className="text-gray-800 font-mono">{participant.id}</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 font-medium">Nama:</span>
-                <span className="text-gray-800 text-right">{participant.nama}</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 font-medium">Jenis Kelamin:</span>
-                <span className="text-gray-800 text-right">{participant.jenisKelamin}</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 font-medium">Instansi:</span>
-                <span className="text-gray-800 text-right">{participant.instansi}</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 font-medium">Nama Instansi:</span>
-                <span className="text-gray-800 text-right">{participant.namaInstansi}</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 font-medium">Status:</span>
-                <span className="text-green-600 font-semibold">Terdaftar ✅</span>
-              </div>
-            </div>
-
-
-            {isVerified && (
-              <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                <div className="text-green-600 font-semibold">Kehadiran Tercatat ✅</div>
-                <div className="text-green-500 text-sm mt-1">Peserta telah berhasil diabsen</div>
-              </div>
-            )}
           </div>
         )}
 
