@@ -42,6 +42,7 @@ export default function ParticipantVerification() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+  const autoSubmitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
   const checkAuth = async () => {
@@ -100,6 +101,15 @@ export default function ParticipantVerification() {
       return () => clearTimeout(timer);
     }
   }, [error, success]);
+
+  // Cleanup auto-submit timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (autoSubmitTimeoutRef.current) {
+        clearTimeout(autoSubmitTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Check participant data
   const checkParticipant = async (id: string): Promise<ApiResponse> => {
@@ -172,9 +182,10 @@ export default function ParticipantVerification() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, overrideId?: string) => {
     e.preventDefault();
-    if (!participantId.trim()) return;
+    const idToUse = overrideId || participantId;
+    if (!idToUse.trim()) return;
 
     setLoading(true);
     setError('');
@@ -182,7 +193,7 @@ export default function ParticipantVerification() {
     setParticipant(null);
     setIsVerified(false);
 
-    const result = await checkParticipant(participantId.trim());
+    const result = await checkParticipant(idToUse.trim());
 
     if (result.status === 'found' && result.data) {
       setParticipant(result.data);
@@ -366,8 +377,31 @@ export default function ParticipantVerification() {
                 type="text"
                 id="participantId"
                 value={participantId}
-                onChange={(e) => setParticipantId(e.target.value)}
-                placeholder="Masukkan atau scan ID peserta"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setParticipantId(value);
+                  
+                  // Clear existing timeout
+                  if (autoSubmitTimeoutRef.current) {
+                    clearTimeout(autoSubmitTimeoutRef.current);
+                  }
+                  
+                  // Auto-submit when input reaches exactly 8 characters
+                  if (value.length === 8 && !loading) {
+                    autoSubmitTimeoutRef.current = setTimeout(() => {
+                      if (!loading) {
+                        // Create a synthetic form event and pass the current value
+                        const syntheticEvent = {
+                          preventDefault: () => {},
+                          target: e.target,
+                          currentTarget: e.currentTarget
+                        } as React.FormEvent;
+                        handleSubmit(syntheticEvent, value); // Pass the exact value that triggered this
+                      }
+                    }, 300);
+                  }
+                }}
+                placeholder="Masukkan ID peserta (8 karakter)"
                 className="w-full px-4 py-4 border-2 rounded-xl outline-none text-lg transition-all duration-300 focus:scale-[1.02]"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -595,10 +629,10 @@ export default function ParticipantVerification() {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
           <h4 className="font-semibold text-blue-800 mb-2">Petunjuk Penggunaan:</h4>
           <ul className="text-blue-700 text-sm space-y-1">
-            <li>• Klik tombol hijau untuk scan QR code atau ketik manual ID peserta</li>
-            <li>• Tekan tombol &quot;Catat Kehadiran&quot; untuk langsung mencatat absen</li>
-            <li>• Kehadiran akan otomatis tercatat jika data peserta ditemukan</li>
-            <li>• Gunakan &quot;Scan Peserta Lain&quot; untuk melanjutkan</li>
+            <li>• Scan QR code atau ketik manual ID peserta (8 karakter)</li>
+            <li>• ID akan otomatis diproses setelah 8 karakter dimasukkan</li>
+            <li>• Kehadiran akan langsung tercatat jika data peserta ditemukan</li>
+            <li>• Gunakan &quot;Scan Peserta Lain&quot; untuk melanjutkan ke peserta berikutnya</li>
           </ul>
         </div>
 
