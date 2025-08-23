@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { feedback } from '@/utils/haptic';
 
 interface QrScannerProps {
   onScan: (result: string) => void;
@@ -116,6 +117,10 @@ export default function QrScanner({ onScan, isActive, onClose }: QrScannerProps)
                 hasScanned = true; // Mark as scanned to prevent multiple triggers
                 const scannedText = result.getText();
                 console.log('QR scanned:', scannedText); // Debug log
+                
+                // Trigger success haptic feedback
+                feedback.success();
+                
                 onScan(scannedText);
                 // Use timeout to ensure callback completes before stopping
                 setTimeout(() => stopScanner(), 100);
@@ -148,6 +153,9 @@ export default function QrScanner({ onScan, isActive, onClose }: QrScannerProps)
       
       setError(errorMessage);
       setIsScanning(false);
+      
+      // Trigger error haptic feedback
+      feedback.error();
     }
   };
 
@@ -193,7 +201,10 @@ export default function QrScanner({ onScan, isActive, onClose }: QrScannerProps)
 
         <div className="flex gap-3 mt-4">
           <button
-            onClick={onClose}
+            onClick={() => {
+              feedback.tap();
+              onClose();
+            }}
             className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
           >
             Tutup
@@ -201,6 +212,7 @@ export default function QrScanner({ onScan, isActive, onClose }: QrScannerProps)
           {error && (
             <button
               onClick={() => {
+                feedback.tap();
                 setError('');
                 startScanner();
               }}

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import QrScanner from '@/components/QrScanner';
 import ClientOnly from '@/components/ClientOnly';
+import { feedback } from '@/utils/haptic';
 
 // Types for API responses
 interface ParticipantData {
@@ -71,10 +72,12 @@ export default function ParticipantVerification() {
 
   const handleLogout = async () => {
     try {
+      feedback.tap();
       await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/login');
     } catch (error) {
       console.error('Logout failed:', error);
+      feedback.error();
     }
   };
 
@@ -188,13 +191,17 @@ export default function ParticipantVerification() {
       if (markResult.status === 'verified') {
         setSuccess('Kehadiran berhasil dicatat! ✅');
         setIsVerified(true);
+        feedback.success();
       } else if (markResult.status === 'error') {
         setError(markResult.message || 'Gagal mencatat kehadiran');
+        feedback.error();
       }
     } else if (result.status === 'not_found') {
       setError('Data tidak ditemukan ❌');
+      feedback.error();
     } else if (result.status === 'error') {
       setError(result.message || 'Terjadi kesalahan saat mengambil data');
+      feedback.error();
     }
 
     setLoading(false);
@@ -224,13 +231,17 @@ export default function ParticipantVerification() {
       if (markResult.status === 'verified') {
         setSuccess('Kehadiran berhasil dicatat! ✅');
         setIsVerified(true);
+        feedback.success();
       } else if (markResult.status === 'error') {
         setError(markResult.message || 'Gagal mencatat kehadiran');
+        feedback.error();
       }
     } else if (result.status === 'not_found') {
       setError('Data tidak ditemukan ❌');
+      feedback.error();
     } else if (result.status === 'error') {
       setError(result.message || 'Terjadi kesalahan saat mengambil data');
+      feedback.error();
     }
 
     setLoading(false);
@@ -238,6 +249,7 @@ export default function ParticipantVerification() {
 
   // Reset form
   const resetForm = () => {
+    feedback.tap();
     setParticipantId('');
     setParticipant(null);
     setError('');
@@ -400,7 +412,10 @@ export default function ParticipantVerification() {
               
               <button
                 type="button"
-                onClick={() => setIsQrScannerActive(true)}
+                onClick={() => {
+                  feedback.tap();
+                  setIsQrScannerActive(true);
+                }}
                 disabled={loading}
                 className="text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100"
                 title="Scan QR Code"
