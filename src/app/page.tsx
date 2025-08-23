@@ -11,6 +11,8 @@ interface ParticipantData {
   id: string;
   nama: string;
   instansi: string;
+  jenisKelamin: string;
+  namaInstansi: string;
 }
 
 interface ApiResponse {
@@ -498,8 +500,16 @@ export default function ParticipantVerification() {
                 <span className="text-gray-800 text-right">{participant.nama}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-gray-600 font-medium">Jenis Kelamin:</span>
+                <span className="text-gray-800 text-right">{participant.jenisKelamin}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-gray-600 font-medium">Instansi:</span>
                 <span className="text-gray-800 text-right">{participant.instansi}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-gray-600 font-medium">Nama Instansi:</span>
+                <span className="text-gray-800 text-right">{participant.namaInstansi}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-600 font-medium">Status:</span>

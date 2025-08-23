@@ -8,11 +8,11 @@ const DEMO_MODE = false;
 
 // Mock data for demo
 const DEMO_PARTICIPANTS = [
-  { id: '1391495B', nama: 'John Doe', instansi: 'PT ABC Indonesia' },
-  { id: '2468013C', nama: 'Jane Smith', instansi: 'CV XYZ Solutions' },
-  { id: '3579024D', nama: 'Ahmad Rahman', instansi: 'UD Maju Bersama' },
-  { id: '4680135E', nama: 'Siti Nurhaliza', instansi: 'PT Teknologi Masa Depan' },
-  { id: '5791246F', nama: 'Budi Santoso', instansi: 'CV Digital Kreatif' }
+  { id: '1391495B', nama: 'John Doe', instansi: 'PT ABC Indonesia', jenisKelamin: 'Laki-laki', namaInstansi: 'PT ABC Indonesia' },
+  { id: '2468013C', nama: 'Jane Smith', instansi: 'CV XYZ Solutions', jenisKelamin: 'Perempuan', namaInstansi: 'CV XYZ Solutions' },
+  { id: '3579024D', nama: 'Ahmad Rahman', instansi: 'UD Maju Bersama', jenisKelamin: 'Laki-laki', namaInstansi: 'UD Maju Bersama' },
+  { id: '4680135E', nama: 'Siti Nurhaliza', instansi: 'PT Teknologi Masa Depan', jenisKelamin: 'Perempuan', namaInstansi: 'PT Teknologi Masa Depan' },
+  { id: '5791246F', nama: 'Budi Santoso', instansi: 'CV Digital Kreatif', jenisKelamin: 'Laki-laki', namaInstansi: 'CV Digital Kreatif' }
 ];
 
 const attendanceLog: Array<{id: string, timestamp: string}> = [];
@@ -165,7 +165,9 @@ export async function GET(request: Request) {
     const participantData = {
       id: participantRow[10],
       nama: participantRow[1] || 'Tidak ada nama',
-      instansi: participantRow[5] || participantRow[6] || 'Tidak ada instansi'
+      instansi: participantRow[5] || participantRow[6] || 'Tidak ada instansi',
+      jenisKelamin: participantRow[3] || 'Tidak diketahui',
+      namaInstansi: participantRow[6] || participantRow[5] || 'Tidak ada nama instansi'
     };
 
     return NextResponse.json({
@@ -292,7 +294,9 @@ export async function POST(request: Request) {
         participantData = {
           id: row[10],
           nama: row[1] || 'Tidak ada nama',
-          instansi: row[5] || row[6] || 'Tidak ada instansi'
+          instansi: row[5] || row[6] || 'Tidak ada instansi',
+          jenisKelamin: row[3] || 'Tidak diketahui',
+          namaInstansi: row[6] || row[5] || 'Tidak ada nama instansi'
         };
         break;
       }
