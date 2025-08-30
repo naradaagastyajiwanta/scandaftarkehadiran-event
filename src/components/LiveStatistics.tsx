@@ -214,8 +214,8 @@ export default function LiveStatistics({ refreshInterval = 10000 }: LiveStatisti
           {/* Mobile-optimized chart */}
           <div className="overflow-x-auto pb-2">
             <div className="flex items-end gap-1 md:gap-2 min-w-max px-2">
-              {stats.attendanceByInterval.map((item) => (
-                <div key={item.interval} className="flex flex-col items-center min-w-0">
+              {stats.attendanceByInterval.map((item, index) => (
+                <div key={`${item.interval}-${index}`} className="flex flex-col items-center min-w-0">
                   {/* Bar */}
                   <div className="relative">
                     <div 

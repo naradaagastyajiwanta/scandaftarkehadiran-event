@@ -290,30 +290,41 @@ export default function ParticipantVerification() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 relative overflow-hidden" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 50%, #f4dfc0 100%)'}}>
-      {/* Decorative Background Elements */}
+    <div className="min-h-screen py-4 md:py-8 px-3 md:px-4 relative overflow-hidden" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 50%, #f4dfc0 100%)'}}>
+      {/* Decorative Background Elements - smaller on mobile */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #710100, #8b2635)'}}></div>
-        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #8b2635, #a73030)'}}></div>
-        <div className="absolute top-1/2 -right-40 w-40 h-40 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #710100, #8b2635)'}}></div>
+        <div className="absolute -top-10 md:-top-20 -right-10 md:-right-20 w-40 md:w-80 h-40 md:h-80 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #710100, #8b2635)'}}></div>
+        <div className="absolute -bottom-10 md:-bottom-20 -left-10 md:-left-20 w-32 md:w-60 h-32 md:h-60 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #8b2635, #a73030)'}}></div>
+        <div className="absolute top-1/2 -right-20 md:-right-40 w-20 md:w-40 h-20 md:h-40 rounded-full opacity-10" style={{background: 'linear-gradient(45deg, #710100, #8b2635)'}}></div>
       </div>
       <div className="max-w-md mx-auto relative z-10">
-        {/* User Info Header */}
+        {/* User Info Header - mobile optimized */}
         {user && (
-          <div className="rounded-xl p-4 mb-6 flex justify-between items-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105" style={{
+          <div className="rounded-xl p-3 md:p-4 mb-4 md:mb-6 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between sm:items-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105" style={{
             backgroundColor: 'rgba(253, 242, 224, 0.95)', 
             border: '1px solid rgba(113, 1, 0, 0.2)',
             boxShadow: '0 8px 32px rgba(113, 1, 0, 0.15), 0 2px 16px rgba(113, 1, 0, 0.1)'
           }}>
-            <div>
-              <h2 className="text-lg font-semibold" style={{color: '#710100'}}>{user.name}</h2>
-              <p className="text-sm" style={{color: '#8b2635'}}>@{user.username} • {user.role}</p>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base md:text-lg font-semibold truncate" style={{color: '#710100'}}>{user.name}</h2>
+              <p className="text-xs md:text-sm truncate" style={{color: '#8b2635'}}>@{user.username} • {user.role}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-1.5 md:gap-2 justify-end sm:justify-start">
+              <button
+                onClick={() => router.push('/participants')}
+                className="text-white px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
+                style={{
+                  backgroundColor: '#a73030',
+                  background: 'linear-gradient(135deg, #a73030 0%, #8b2635 100%)',
+                  boxShadow: '0 4px 15px rgba(167, 48, 48, 0.3)'
+                }}
+              >
+                📋 Daftar Peserta
+              </button>
               {user.role === 'admin' && (
                 <button
                   onClick={() => router.push('/admin')}
-                  className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
+                  className="text-white px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
                   style={{
                     backgroundColor: '#8b2635',
                     background: 'linear-gradient(135deg, #8b2635 0%, #a73030 100%)',
@@ -325,7 +336,7 @@ export default function ParticipantVerification() {
               )}
               <button
                 onClick={handleLogout}
-                className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
+                className="text-white px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
                 style={{
                   backgroundColor: '#710100',
                   background: 'linear-gradient(135deg, #710100 0%, #8b2635 100%)',
@@ -338,11 +349,11 @@ export default function ParticipantVerification() {
           </div>
         )}
 
-        {/* Header */}
-        <div className="text-center mb-8 relative">
-          <div className="absolute inset-0 -top-4 -bottom-4 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 rounded-full blur-xl"></div>
-          <div className="mb-4">
-            <h1 className="text-4xl font-bold mb-2 relative z-10" style={{
+        {/* Header - mobile optimized */}
+        <div className="text-center mb-6 md:mb-8 relative">
+          <div className="absolute inset-0 -top-2 md:-top-4 -bottom-2 md:-bottom-4 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 rounded-full blur-xl"></div>
+          <div className="mb-3 md:mb-4">
+            <h1 className="text-2xl md:text-4xl font-bold mb-2 relative z-10" style={{
               color: '#710100',
               textShadow: '2px 2px 4px rgba(113, 1, 0, 0.2)',
               background: 'linear-gradient(135deg, #710100 0%, #8b2635 50%, #710100 100%)',
@@ -352,18 +363,18 @@ export default function ParticipantVerification() {
             }}>
               ✨ Verifikasi Peserta
             </h1>
-            <div className="text-center mb-3">
-              <div className="mb-2 p-3 rounded-lg" style={{
+            <div className="text-center mb-2 md:mb-3">
+              <div className="mb-2 p-2 md:p-3 rounded-lg" style={{
                 backgroundColor: 'rgba(113, 1, 0, 0.05)',
                 border: '1px solid rgba(113, 1, 0, 0.1)'
               }}>
-                <h2 className="text-xl font-bold leading-tight mb-1" style={{
+                <h2 className="text-lg md:text-xl font-bold leading-tight mb-1" style={{
                   color: '#710100',
                   textShadow: '1px 1px 2px rgba(113, 1, 0, 0.2)'
                 }}>
                   🇮🇩 Manusia Indonesia Jaya
                 </h2>
-                <h3 className="text-lg font-semibold leading-tight" style={{
+                <h3 className="text-sm md:text-lg font-semibold leading-tight" style={{
                   color: '#8b2635',
                   opacity: 0.95
                 }}>
@@ -372,20 +383,20 @@ export default function ParticipantVerification() {
               </div>
             </div>
           </div>
-          <p className="text-lg relative z-10" style={{color: '#8b2635', opacity: 0.8}}>
+          <p className="text-base md:text-lg relative z-10" style={{color: '#8b2635', opacity: 0.8}}>
             🔍 Scan QR Code atau masukkan ID peserta
           </p>
         </div>
 
-        {/* Input Form */}
-        <div className="rounded-xl p-6 mb-6 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02]" style={{
+        {/* Input Form - mobile optimized */}
+        <div className="rounded-xl p-4 md:p-6 mb-4 md:mb-6 backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02]" style={{
           backgroundColor: 'rgba(253, 242, 224, 0.98)', 
           border: '1px solid rgba(113, 1, 0, 0.2)',
           boxShadow: '0 12px 40px rgba(113, 1, 0, 0.15), 0 4px 20px rgba(113, 1, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
         }}>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
             <div>
-              <label htmlFor="participantId" className="block text-sm font-semibold mb-3 flex items-center gap-2" style={{color: '#710100'}}>
+              <label htmlFor="participantId" className="block text-xs md:text-sm font-semibold mb-2 md:mb-3 flex items-center gap-2" style={{color: '#710100'}}>
                 🎫 ID Peserta
               </label>
               <input
@@ -418,7 +429,7 @@ export default function ParticipantVerification() {
                   }
                 }}
                 placeholder="Masukkan ID peserta (8 karakter)"
-                className="w-full px-4 py-4 border-2 rounded-xl outline-none text-lg transition-all duration-300 focus:scale-[1.02]"
+                className="w-full px-3 md:px-4 py-3 md:py-4 border-2 rounded-xl outline-none text-base md:text-lg transition-all duration-300 focus:scale-[1.02]"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.9)',
                   borderColor: '#f7e6c4',
@@ -436,11 +447,11 @@ export default function ParticipantVerification() {
                 autoComplete="off"
               />
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-4">
               <button
                 type="submit"
                 disabled={loading || !participantId.trim()}
-                className="flex-1 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100"
+                className="flex-1 text-white font-bold py-3 md:py-4 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100 text-sm md:text-base"
                 style={{
                   backgroundColor: (loading || !participantId.trim()) ? '#9CA3AF' : '#710100',
                   background: (loading || !participantId.trim()) ? '#9CA3AF' : 'linear-gradient(135deg, #710100 0%, #8b2635 100%)',
@@ -469,7 +480,7 @@ export default function ParticipantVerification() {
                   setIsQrScannerActive(true);
                 }}
                 disabled={loading}
-                className="text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100"
+                className="sm:flex-none text-white font-bold py-3 md:py-4 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100 text-sm md:text-base"
                 title="Scan QR Code"
                 style={{
                   backgroundColor: loading ? '#9CA3AF' : '#8b2635',

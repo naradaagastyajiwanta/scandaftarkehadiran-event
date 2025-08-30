@@ -188,7 +188,7 @@ export async function GET() {
           const timestampStr = row[1].toString();
           const [datePart, timePart] = timestampStr.split(', ');
           if (timePart) {
-            const [hour, minute] = timePart.split('.').map(x => parseInt(x));
+            const [hour, minute] = timePart.split('.').map((x: string) => parseInt(x));
             
             // Round down to nearest 10-minute interval
             const roundedMinute = Math.floor(minute / 10) * 10;

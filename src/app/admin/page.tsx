@@ -195,34 +195,41 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 50%, #f4dfc0 100%)'}}>
+    <div className="min-h-screen py-4 md:py-8 px-3 md:px-4" style={{background: 'linear-gradient(135deg, #fdf2e0 0%, #f7e6c4 50%, #f4dfc0 100%)'}}>
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="rounded-xl p-6 mb-6 flex justify-between items-center backdrop-blur-sm" style={{
+        {/* Header - mobile optimized */}
+        <div className="rounded-xl p-4 md:p-6 mb-4 md:mb-6 flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center backdrop-blur-sm" style={{
           backgroundColor: 'rgba(253, 242, 224, 0.95)', 
           border: '1px solid rgba(113, 1, 0, 0.2)',
           boxShadow: '0 8px 32px rgba(113, 1, 0, 0.15)'
         }}>
-          <div>
-            <h1 className="text-3xl font-bold" style={{color: '#710100'}}>Admin Panel</h1>
-            <p className="text-lg mt-1" style={{color: '#8b2635'}}>Kelola User Sistem</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl md:text-3xl font-bold" style={{color: '#710100'}}>Admin Panel</h1>
+            <p className="text-base md:text-lg mt-1" style={{color: '#8b2635'}}>Kelola User Sistem</p>
             {currentUser && (
-              <p className="text-sm mt-2" style={{color: '#8b2635'}}>
+              <p className="text-xs md:text-sm mt-1 md:mt-2 truncate" style={{color: '#8b2635'}}>
                 Login sebagai: <strong>{currentUser.name}</strong> (@{currentUser.username})
               </p>
             )}
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 md:gap-3">
             <button
               onClick={() => router.push('/')}
-              className="text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+              className="text-white px-3 md:px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 text-sm md:text-base"
               style={{backgroundColor: '#8b2635'}}
             >
               Dashboard
             </button>
             <button
+              onClick={() => router.push('/participants')}
+              className="text-white px-3 md:px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 text-sm md:text-base"
+              style={{backgroundColor: '#a73030'}}
+            >
+              📋 Daftar Peserta
+            </button>
+            <button
               onClick={handleLogout}
-              className="text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+              className="text-white px-3 md:px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 text-sm md:text-base"
               style={{backgroundColor: '#710100'}}
             >
               Logout
@@ -230,11 +237,11 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        {/* Add User Button */}
-        <div className="mb-6">
+        {/* Add User Button - mobile optimized */}
+        <div className="mb-4 md:mb-6">
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            className="w-full sm:w-auto text-white px-4 md:px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base"
             style={{
               backgroundColor: '#22c55e',
               background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
@@ -244,91 +251,91 @@ export default function AdminPanel() {
           </button>
         </div>
 
-        {/* Notifications */}
+        {/* Notifications - mobile optimized */}
         {error && (
-          <div className="border-2 px-6 py-4 rounded-xl mb-6" style={{
+          <div className="border-2 px-4 md:px-6 py-3 md:py-4 rounded-xl mb-4 md:mb-6" style={{
             backgroundColor: 'rgba(254, 242, 242, 0.95)', 
             borderColor: '#ef4444', 
             color: '#dc2626'
           }}>
-            <div className="flex items-center gap-3">
-              <div className="text-xl">❌</div>
-              <div className="font-medium">{error}</div>
+            <div className="flex items-start gap-3">
+              <div className="text-lg md:text-xl">❌</div>
+              <div className="font-medium text-sm md:text-base flex-1 min-w-0 break-words">{error}</div>
             </div>
           </div>
         )}
 
         {success && (
-          <div className="border-2 px-6 py-4 rounded-xl mb-6" style={{
+          <div className="border-2 px-4 md:px-6 py-3 md:py-4 rounded-xl mb-4 md:mb-6" style={{
             backgroundColor: 'rgba(240, 253, 244, 0.95)', 
             borderColor: '#22c55e', 
             color: '#166534'
           }}>
-            <div className="flex items-center gap-3">
-              <div className="text-xl">✅</div>
-              <div className="font-medium">{success}</div>
+            <div className="flex items-start gap-3">
+              <div className="text-lg md:text-xl">✅</div>
+              <div className="font-medium text-sm md:text-base flex-1 min-w-0 break-words">{success}</div>
             </div>
           </div>
         )}
 
-        {/* Add/Edit User Form */}
+        {/* Add/Edit User Form - mobile optimized */}
         {showAddForm && (
-          <div className="rounded-xl p-6 mb-6 backdrop-blur-sm" style={{
+          <div className="rounded-xl p-4 md:p-6 mb-4 md:mb-6 backdrop-blur-sm" style={{
             backgroundColor: 'rgba(253, 242, 224, 0.98)', 
             border: '1px solid rgba(113, 1, 0, 0.2)',
             boxShadow: '0 12px 40px rgba(113, 1, 0, 0.15)'
           }}>
-            <h2 className="text-xl font-bold mb-4" style={{color: '#710100'}}>
+            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4" style={{color: '#710100'}}>
               {editingUser ? 'Edit User' : 'Tambah User Baru'}
             </h2>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#710100'}}>
+                <label className="block text-xs md:text-sm font-semibold mb-1 md:mb-2" style={{color: '#710100'}}>
                   Username
                 </label>
                 <input
                   type="text"
                   value={formData.username}
                   onChange={(e) => setFormData({...formData, username: e.target.value})}
-                  className="w-full px-4 py-3 border rounded-lg outline-none"
+                  className="w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg outline-none text-sm md:text-base"
                   style={{borderColor: '#f7e6c4', color: '#710100'}}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#710100'}}>
-                  Password {editingUser && '(kosongkan jika tidak ingin ubah)'}
+                <label className="block text-xs md:text-sm font-semibold mb-1 md:mb-2" style={{color: '#710100'}}>
+                  Password {editingUser && <span className="text-xs">(kosongkan jika tidak ingin ubah)</span>}
                 </label>
                 <input
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="w-full px-4 py-3 border rounded-lg outline-none"
+                  className="w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg outline-none text-sm md:text-base"
                   style={{borderColor: '#f7e6c4', color: '#710100'}}
                   required={!editingUser}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#710100'}}>
+                <label className="block text-xs md:text-sm font-semibold mb-1 md:mb-2" style={{color: '#710100'}}>
                   Nama Lengkap
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-3 border rounded-lg outline-none"
+                  className="w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg outline-none text-sm md:text-base"
                   style={{borderColor: '#f7e6c4', color: '#710100'}}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#710100'}}>
+                <label className="block text-xs md:text-sm font-semibold mb-1 md:mb-2" style={{color: '#710100'}}>
                   Role
                 </label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({...formData, role: e.target.value as 'admin' | 'user'})}
-                  className="w-full px-4 py-3 border rounded-lg outline-none"
+                  className="w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg outline-none text-sm md:text-base"
                   style={{borderColor: '#f7e6c4', color: '#710100'}}
                   required
                 >
@@ -336,11 +343,11 @@ export default function AdminPanel() {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              <div className="md:col-span-2 flex gap-3">
+              <div className="md:col-span-2 flex flex-col sm:flex-row gap-2 md:gap-3">
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
+                  className="flex-1 text-white px-4 md:px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 text-sm md:text-base"
                   style={{
                     backgroundColor: formLoading ? '#9CA3AF' : '#710100',
                     background: formLoading ? '#9CA3AF' : 'linear-gradient(135deg, #710100 0%, #8b2635 100%)'
@@ -351,7 +358,7 @@ export default function AdminPanel() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="text-gray-700 bg-gray-200 hover:bg-gray-300 px-6 py-3 rounded-lg font-semibold transition-all duration-200"
+                  className="flex-1 sm:flex-none text-gray-700 bg-gray-200 hover:bg-gray-300 px-4 md:px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-sm md:text-base"
                 >
                   Batal
                 </button>

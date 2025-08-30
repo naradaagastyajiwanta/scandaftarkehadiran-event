@@ -174,38 +174,38 @@ export default function QrScanner({ onScan, isActive, onClose }: QrScannerProps)
   if (!isActive || !isMounted) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
-        <div className="text-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">Scan QR Code</h3>
-          <p className="text-gray-600 text-sm">Arahkan kamera ke QR code peserta</p>
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-3 md:p-4">
+      <div className="bg-white rounded-lg p-4 md:p-6 max-w-sm w-full">
+        <div className="text-center mb-3 md:mb-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-800">Scan QR Code</h3>
+          <p className="text-gray-600 text-xs md:text-sm">Arahkan kamera ke QR code peserta</p>
         </div>
 
         {error ? (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 md:px-4 py-2 md:py-3 rounded-lg mb-3 md:mb-4 text-sm md:text-base">
             {error}
           </div>
         ) : (
           <div className="relative">
             <video
               ref={videoRef}
-              className="w-full h-64 bg-gray-200 rounded-lg object-cover"
+              className="w-full h-48 md:h-64 bg-gray-200 rounded-lg object-cover"
               playsInline
               muted
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-48 border-2 border-blue-500 border-dashed rounded-lg"></div>
+              <div className="w-32 h-32 md:w-48 md:h-48 border-2 border-blue-500 border-dashed rounded-lg"></div>
             </div>
           </div>
         )}
 
-        <div className="flex gap-3 mt-4">
+        <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mt-3 md:mt-4">
           <button
             onClick={() => {
               feedback.tap();
               onClose();
             }}
-            className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+            className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm md:text-base"
           >
             Tutup
           </button>
@@ -216,7 +216,7 @@ export default function QrScanner({ onScan, isActive, onClose }: QrScannerProps)
                 setError('');
                 startScanner();
               }}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm md:text-base"
             >
               Coba Lagi
             </button>

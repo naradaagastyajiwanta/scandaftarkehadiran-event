@@ -5,7 +5,9 @@
       "Bash(npm run dev:*)",
       "Bash(npx eslint:*)",
       "Bash(npx next lint:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)"
     ],
     "additionalDirectories": [
       "G:\\"
