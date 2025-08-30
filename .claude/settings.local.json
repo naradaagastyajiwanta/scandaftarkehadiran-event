@@ -4,7 +4,8 @@
       "Bash(powershell:*)",
       "Bash(npm run dev:*)",
       "Bash(npx eslint:*)",
-      "Bash(npx next lint:*)"
+      "Bash(npx next lint:*)",
+      "Bash(npm run build:*)"
     ],
     "additionalDirectories": [
       "G:\\"

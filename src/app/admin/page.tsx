@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
@@ -42,24 +42,7 @@ export default function AdminPanel() {
   const [formLoading, setFormLoading] = useState(false);
   const router = useRouter();
 
-  const checkAuth = async () => {
-    try {
-      const response = await fetch('/api/auth/verify');
-      const data = await response.json();
-      
-      if (data.success && data.user.role === 'admin') {
-        setCurrentUser(data.user);
-        fetchUsers();
-      } else {
-        router.push('/login');
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      router.push('/login');
-    }
-  };
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const response = await fetch('/api/users');
       const data = await response.json();
@@ -75,7 +58,24 @@ export default function AdminPanel() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/verify');
+      const data = await response.json();
+      
+      if (data.success && data.user.role === 'admin') {
+        setCurrentUser(data.user);
+        fetchUsers();
+      } else {
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      router.push('/login');
+    }
+  }, [router, fetchUsers]);
 
   const handleLogout = async () => {
     try {
@@ -112,7 +112,7 @@ export default function AdminPanel() {
         setShowAddForm(false);
         setEditingUser(null);
         setFormData({ username: '', password: '', name: '', role: 'user' });
-        fetchUsers();
+        await fetchUsers();
       } else {
         setError(data.message);
       }
@@ -149,7 +149,7 @@ export default function AdminPanel() {
 
       if (data.success) {
         setSuccess(data.message);
-        fetchUsers();
+        await fetchUsers();
       } else {
         setError(data.message);
       }
@@ -168,7 +168,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   useEffect(() => {
     if (error || success) {

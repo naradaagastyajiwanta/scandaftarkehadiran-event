@@ -26,12 +26,12 @@ function verifyAdmin(request: Request) {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; username: string; name: string; role: string };
     if (decoded.role !== 'admin') {
       return null;
     }
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
