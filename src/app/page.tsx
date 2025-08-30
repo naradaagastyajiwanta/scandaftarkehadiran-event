@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import QrScanner from '@/components/QrScanner';
 import ClientOnly from '@/components/ClientOnly';
+import LiveStatistics from '@/components/LiveStatistics';
 import { feedback } from '@/utils/haptic';
 
 // Types for API responses
@@ -650,6 +651,9 @@ export default function ParticipantVerification() {
             <li>• Gunakan &quot;Scan Peserta Lain&quot; untuk melanjutkan ke peserta berikutnya</li>
           </ul>
         </div>
+
+        {/* Live Statistics */}
+        <LiveStatistics refreshInterval={15000} />
 
         {/* QR Scanner Modal */}
         <ClientOnly>
