@@ -20,6 +20,20 @@
       "password": "aku123aku",
       "name": "Narada Agastya Jiwanta",
       "role": "user"
+    },
+    {
+      "id": "4",
+      "username": "kabir",
+      "password": "aku123aku",
+      "name": "Kabir Atisha",
+      "role": "user"
+    },
+    {
+      "id": "5",
+      "username": "jordan",
+      "password": "aku123aku",
+      "name": "Jordan Shankara",
+      "role": "user"
     }
   ]
 }
