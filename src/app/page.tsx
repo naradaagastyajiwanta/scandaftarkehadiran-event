@@ -308,17 +308,32 @@ export default function ParticipantVerification() {
               <h2 className="text-lg font-semibold" style={{color: '#710100'}}>{user.name}</h2>
               <p className="text-sm" style={{color: '#8b2635'}}>@{user.username} • {user.role}</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
-              style={{
-                backgroundColor: '#710100',
-                background: 'linear-gradient(135deg, #710100 0%, #8b2635 100%)',
-                boxShadow: '0 4px 15px rgba(113, 1, 0, 0.3)'
-              }}
-            >
-              Logout
-            </button>
+            <div className="flex gap-2">
+              {user.role === 'admin' && (
+                <button
+                  onClick={() => router.push('/admin')}
+                  className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
+                  style={{
+                    backgroundColor: '#8b2635',
+                    background: 'linear-gradient(135deg, #8b2635 0%, #a73030 100%)',
+                    boxShadow: '0 4px 15px rgba(139, 38, 53, 0.3)'
+                  }}
+                >
+                  Admin Panel
+                </button>
+              )}
+              <button
+                onClick={handleLogout}
+                className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
+                style={{
+                  backgroundColor: '#710100',
+                  background: 'linear-gradient(135deg, #710100 0%, #8b2635 100%)',
+                  boxShadow: '0 4px 15px rgba(113, 1, 0, 0.3)'
+                }}
+              >
+                Logout
+              </button>
+            </div>
           </div>
         )}
 

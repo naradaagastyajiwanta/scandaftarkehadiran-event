@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Protected routes that require authentication
-const protectedRoutes = ['/', '/api/participant'];
+const protectedRoutes = ['/', '/admin', '/api/participant', '/api/users'];
 
 // Public routes that don't require authentication
 const publicRoutes = ['/login', '/register', '/api/auth/login', '/api/auth/logout', '/api/auth/register'];
